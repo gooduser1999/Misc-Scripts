@@ -1,9 +1,9 @@
 param(
-	[String] $Uri = $args[0],
-	[String] $data $args[1] 
+	[String] $data = $args[0],
+	[String] $Uri = $args[1]
 	)
 $Timeout=10000000;
-$fileName = [System.IO.Path]::GetFileName($args[0])
+$fileName = [System.IO.Path]::GetFileName($data)
 $url = ($Uri + '/' + $fileName);
 $content = Get-Content -LiteralPath ($data) -Encoding UTF8 -ErrorAction SilentlyContinue
 $scriptInp = [string]::Join("`r`n", $content)
