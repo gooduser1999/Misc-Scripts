@@ -1,10 +1,10 @@
 param(
-	[String] $Uri = $args[0]
+	[String] $Uri = $args[0],
+	[String] $data $args[1] 
 	)
 $Timeout=10000000;
-$data= $args[0]
 $fileName = [System.IO.Path]::GetFileName($args[0])
-$url = "$Uri/$fileName";
+$url = ($Uri + '/' + $fileName);
 $content = Get-Content -LiteralPath ($data) -Encoding UTF8 -ErrorAction SilentlyContinue
 $scriptInp = [string]::Join("`r`n", $content)
 $buffer64 = [System.Convert]::ToBase64String(([System.Text.Encoding]::UTF8.GetBytes($scriptInp))) 
