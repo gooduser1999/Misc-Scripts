@@ -19,8 +19,8 @@ try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
-
-CERTFILE_PATH = "./ssl/server.pem"
+DPATH = (os.environ['HOME'] + '/ssl/server.pem')
+CERTFILE_PATH = $DPATH
 port = 8080
 key = ""
 #class AuthHandler(SimpleHTTPRequestHandler):
