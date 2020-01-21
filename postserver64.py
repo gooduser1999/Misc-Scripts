@@ -8,11 +8,11 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import logging
 import base64
 import json
+import os
 from os import curdir
 from optparse import OptionParser
 from os.path import join as pjoin
 from pathlib import Path
-
 class S(BaseHTTPRequestHandler):
     store_path = pjoin(curdir, 'store.json')
     def _set_response(self):
@@ -29,7 +29,6 @@ class S(BaseHTTPRequestHandler):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
         b64_string = post_data
-#        b64_string += "=" * ((4 - len(b64_string) % 4) % 4)
         post_data = base64.b64decode(b64_string)
         logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
             str(self.path), str(self.headers), post_data.decode('utf-8'))
@@ -38,7 +37,8 @@ class S(BaseHTTPRequestHandler):
         store_path = pjoin(curdir, 'store.json')
         for char in ' /':
             path = path.replace(char,'')
-        dirname='/opt/server1/Public/'
+        path = path.replace("store.json", "")   ## replace trailing on server uri
+        dirname='/opt/server/Public/'
         filename = path
         path = Path(dirname, filename)
         try:
@@ -61,7 +61,7 @@ class S(BaseHTTPRequestHandler):
 
 def run(server_class=HTTPServer, handler_class=S, port=8080):
     logging.basicConfig(level=logging.INFO)
-    server_address = ('167.71.125.242', port)
+    server_address = ('127.0.0.1', port)
     httpd = server_class(server_address, handler_class)
     logging.info('Starting httpd...\n')
     try:
@@ -78,4 +78,3 @@ if __name__ == '__main__':
         run(port=int(argv[1]))
     else:
         run()
-
