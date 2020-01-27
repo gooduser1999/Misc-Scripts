@@ -9,6 +9,7 @@ import logging
 import base64
 import json
 import os
+import datetime
 from os import curdir
 from optparse import OptionParser
 from os.path import join as pjoin
@@ -37,7 +38,7 @@ class S(BaseHTTPRequestHandler):
         store_path = pjoin(curdir, 'store.json')
         for char in ' /':
             path = path.replace(char,'')
-        path = path.replace("store.json", "")   ## replace trailing on server uri
+        path = path.replace("store.json", "")
         dirname='/opt/server/Public/'
         filename = path
         path = Path(dirname, filename)
@@ -52,7 +53,9 @@ class S(BaseHTTPRequestHandler):
             f.write(post_data)
             f.close()
             log_file = open(store_path, "a")
-            log_file.write('\n')
+            log_file.write("\n")
+            log_file.write("%s\n" % datetime.datetime.now())
+            log_file.write("\n")
             log_file.close()
             print("Wrote contents to %s." % store_path)
 
