@@ -21,7 +21,7 @@ function Create-AesManagedObject($key, $IV) {
     $aesManaged.Mode = [System.Security.Cryptography.CipherMode]::CBC
     $aesManaged.Padding = [System.Security.Cryptography.PaddingMode]::Zeros
     $aesManaged.BlockSize = 128
-    $aesManaged.KeySize = 256
+    $aesManaged.KeySize = 128
     if ($IV) {
         if ($IV.getType().Name -eq "String") {
 #	    $aesManaged.IV = [System.Convert]::FromBase64String($IV) to $aesManaged.IV = [Text.Encoding]::UTF8.GetBytes($IV)
@@ -86,19 +86,23 @@ if ($Encrypt) {
 		if ($Random) {
 			$key = Create-AesKey
 			Write-Host $key
-			$fileContent = Get-Content -LiteralPath ($data) -Encoding UTF8 -ErrorAction SilentlyContinue
+			$fileContent = Get-Content -LiteralPath ($Data) -Encoding UTF8 -ErrorAction SilentlyContinue
 			$fileContentBytes = [string]::Join("`r`n", $fileContent)
 			$fileContentEncoded = [System.Convert]::ToBase64String(([System.Text.Encoding]::UTF8.GetBytes($fileContentBytes))) 
 			$unencryptedString = $fileContentEncoded 
-			Encrypt-String $key $unencryptedString
+			$THY = $key
+			$THE = Encrypt-String $key $unencryptedString
+			OutFileAes $THE $THY
 		}
 		else {
 			$key = '10lbKOHL62zy4XBfd7XoFkZR+YId6k5fT8BHR9HTZlw='
-			$fileContent = Get-Content -LiteralPath ($data) -Encoding UTF8 -ErrorAction SilentlyContinue
+			$fileContent = Get-Content -LiteralPath ($Data) -Encoding UTF8 -ErrorAction SilentlyContinue
 			$fileContentBytes = [string]::Join("`r`n", $fileContent)
 			$fileContentEncoded = [System.Convert]::ToBase64String(([System.Text.Encoding]::UTF8.GetBytes($fileContentBytes))) 
 			$unencryptedString = $fileContentEncoded 
-			Encrypt-String $key $unencryptedString
+			$THY = $key
+			$THE = Encrypt-String $key $unencryptedString
+			OutFileAes $THE $THY
 		}
 	}
 }
@@ -130,4 +134,38 @@ if ($Decrypt) {
 		}
 	}
 }
+}
+function OutFileAes {
+Param(
+	[String]
+	$DCode = $args[0],
+	[String]
+	$DKey = $args[1]
+	)
+$Path = (get-item -path ".\").FullName
+$OutputFile = $PATH + '\Default-aes.ps1'
+$Code = 'function Create-AesManagedObject($key, $IV) {
+$aesManaged = New-Object "System.Security.Cryptography.AesManaged"
+$aesManaged.Mode = [System.Security.Cryptography.CipherMode]::CBC
+$aesManaged.Padding = [System.Security.Cryptography.PaddingMode]::Zeros
+$aesManaged.BlockSize = 128
+$aesManaged.KeySize = 128
+if ($IV) { if ($IV.getType().Name -eq "String") { $aesManaged.IV = [System.Convert]::FromBase64String($IV) } else { $aesManaged.IV = $IV } }
+if ($key) { if ($key.getType().Name -eq "String") { $aesManaged.Key = [System.Convert]::FromBase64String($key) } else { $aesManaged.Key = $key } }
+$aesManaged }
+function Decrypt-String($key, $encryptedStringWithIV) {
+$bytes = [System.Convert]::FromBase64String($encryptedStringWithIV)
+$IV = $bytes[0..15]
+$aesManaged = Create-AesManagedObject $key $IV
+$decryptor = $aesManaged.CreateDecryptor();
+$unencryptedData = $decryptor.TransformFinalBlock($bytes, 16, $bytes.Length - 16);
+$aesManaged.Dispose()
+[System.Text.Encoding]::UTF8.GetString($unencryptedData).Trim([char]0) }
+$encryptedString =  "' + $DCode + '";
+$key = "' + $DKey +'";
+$backToPlainText = Decrypt-String $key $encryptedString
+$Start = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($backToPlainText))
+$Start | IEX
+'
+Write-Output $Code | Out-File $OutputFile -encoding utf8
 }
