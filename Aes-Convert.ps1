@@ -66,7 +66,7 @@ function Decrypt-String($key, $encryptedStringWithIV) {
     [System.Text.Encoding]::UTF8.GetString($unencryptedData).Trim([char]0)
 }
 if ($Help) {
-	Write-Host "Aes blahblah -String|-File -Encrypt|-Decrypt"
+	Write-Host "Aes 'blahblah'|.\blah.ps1 -String|-File -Encrypt|-Decrypt -Random|(empty)"
 }
 if ($Encrypt) {
 	if ($String) {
