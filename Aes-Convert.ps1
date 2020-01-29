@@ -66,7 +66,7 @@ function Decrypt-String($key, $encryptedStringWithIV) {
     [System.Text.Encoding]::UTF8.GetString($unencryptedData).Trim([char]0)
 }
 if ($Help) {
-	Write-Host "Aes 'blahblah'|.\blah.ps1 -String|-File -Encrypt|-Decrypt -Random|(empty)"
+	Write-Host "Aes blahblah|.\blah.ps1 -String|-File -Encrypt|-Decrypt -Random|(empty)"
 }
 if ($Encrypt) {
 	if ($String) {
@@ -142,8 +142,9 @@ Param(
 	[String]
 	$DKey = $args[1]
 	)
-$Path = (get-item -path ".\").FullName
-$OutputFile = $PATH + '\Default-aes.ps1'
+$Suffix = [System.IO.Path]::GetExtension($Data)
+$Path = [System.IO.Path]::GetFileNameWithoutExtension($Data)
+$OutputFile = $Path + "-aes" + $Suffix
 $Code = 'function Create-AesManagedObject($key, $IV) {
 $aesManaged = New-Object "System.Security.Cryptography.AesManaged"
 $aesManaged.Mode = [System.Security.Cryptography.CipherMode]::CBC
