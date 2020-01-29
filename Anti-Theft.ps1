@@ -10,6 +10,7 @@ param(
 	[String] $data = $args[0],
 	[String] $Uri = $args[1]
 	)
+
 $Timeout=10000000;
 $buffer64 = [System.Convert]::ToBase64String(([System.Text.Encoding]::UTF8.GetBytes($data))) 
 $buffer = ([text.encoding]::UTF8).GetBytes($buffer64);
@@ -32,11 +33,12 @@ function Anti-Theft {
 param(
 	[String] $Url = $args[0]
 	)
-$date = (Get-Date).tostring("  yyyyMMddhhss ")
-$Source = (Invoke-WebRequest -UseBasicParsing -Uri "http://ifconfig.me/ip").Content
-$UPdata = ($date + $Source)
 do {
     try {
+    		## The post server will date  each post in a better format than if i used Get-Date, When uploaded, Get-Date for
+		## for some reason would automatically turn it into a string format.
+		$Source = (Invoke-WebRequest -UseBasicParsing -Uri "http://ifconfig.me/ip").Content
+		$UPdata = $Source
 		Upload $UPdata $Url | Out-Null
 		Start-Sleep -Seconds 60
         }
