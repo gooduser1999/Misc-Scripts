@@ -77,7 +77,7 @@ if ($Encrypt) {
 			Encrypt-String $key $unencryptedString
 		}
 		else {	
-			$key = '10lbKOHL62zy4XBfd7XoFkZR+YId6k5fT8BHR9HTZlw='
+			$key = '6okwNMooMk9mkxGAGOqGDQ=='
 			$unencryptedString = $Data
 			Encrypt-String $key $unencryptedString
 		}
@@ -95,7 +95,7 @@ if ($Encrypt) {
 			OutFileAes $THE $THY
 		}
 		else {
-			$key = '10lbKOHL62zy4XBfd7XoFkZR+YId6k5fT8BHR9HTZlw='
+			$key = '6okwNMooMk9mkxGAGOqGDQ=='
 			$fileContent = Get-Content -LiteralPath ($Data) -Encoding UTF8 -ErrorAction SilentlyContinue
 			$fileContentBytes = [string]::Join("`r`n", $fileContent)
 			$fileContentEncoded = [System.Convert]::ToBase64String(([System.Text.Encoding]::UTF8.GetBytes($fileContentBytes))) 
@@ -114,7 +114,7 @@ if ($Decrypt) {
 			Decrypt-String $key $encryptedString
 		}
 		else {
-			$key = '10lbKOHL62zy4XBfd7XoFkZR+YId6k5fT8BHR9HTZlw='
+			$key = '6okwNMooMk9mkxGAGOqGDQ=='
 			$encryptedString = $Data
 			Decrypt-String $key $encryptedString
 		}
@@ -127,7 +127,7 @@ if ($Decrypt) {
 			[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($backToPlainText))
 		}	
 		else {
-		$key = '10lbKOHL62zy4XBfd7XoFkZR+YId6k5fT8BHR9HTZlw='
+		$key = '6okwNMooMk9mkxGAGOqGDQ=='
 		$encryptedString = get-content -raw $Data
 		$backToPlainText = Decrypt-String $key $encryptedString
 		[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($backToPlainText))
