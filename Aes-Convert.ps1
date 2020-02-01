@@ -2,7 +2,9 @@ function Aes {
 [CmdletBinding()]
 Param( [Parameter(Position = 0, Mandatory = $False)]
 		[String]
-		$Data,  
+		$Data,
+		[String]
+		$DefaultKey = '6okwNMooMk9mkxGAGOqGDQ==',
 		[Switch]
 		$String,
 		[Switch]
@@ -77,7 +79,7 @@ if ($Encrypt) {
 			Encrypt-String $key $unencryptedString
 		}
 		else {	
-			$key = '6okwNMooMk9mkxGAGOqGDQ=='
+			$key = $DefaultKey
 			$unencryptedString = $Data
 			Encrypt-String $key $unencryptedString
 		}
@@ -95,7 +97,7 @@ if ($Encrypt) {
 			OutFileAes $THE $THY
 		}
 		else {
-			$key = '6okwNMooMk9mkxGAGOqGDQ=='
+			$key = $DefaultKey
 			$fileContent = Get-Content -LiteralPath ($Data) -Encoding UTF8 -ErrorAction SilentlyContinue
 			$fileContentBytes = [string]::Join("`r`n", $fileContent)
 			$fileContentEncoded = [System.Convert]::ToBase64String(([System.Text.Encoding]::UTF8.GetBytes($fileContentBytes))) 
@@ -114,7 +116,7 @@ if ($Decrypt) {
 			Decrypt-String $key $encryptedString
 		}
 		else {
-			$key = '6okwNMooMk9mkxGAGOqGDQ=='
+			$key = $DefaultKey
 			$encryptedString = $Data
 			Decrypt-String $key $encryptedString
 		}
@@ -127,7 +129,7 @@ if ($Decrypt) {
 			[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($backToPlainText))
 		}	
 		else {
-		$key = '6okwNMooMk9mkxGAGOqGDQ=='
+		$key = $DefaultKey
 		$encryptedString = get-content -raw $Data
 		$backToPlainText = Decrypt-String $key $encryptedString
 		[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($backToPlainText))
