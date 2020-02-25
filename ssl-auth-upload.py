@@ -2,6 +2,9 @@
 
 __version__ = "0.2"
 __all__ = ["SimpleHTTPRequestHandler"]
+__author__ = "Zuul"
+__home_page__ = "Nuupe"
+__ssl_addition__ = 'rhmoult'
 
 import os
 import posixpath
@@ -19,12 +22,11 @@ try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
-DPATH = (os.environ['HOME'] + '/ssl/server.pem')
-CERTFILE_PATH = $DPATH
+
+CERTFILE_PATH = ".\ssl\server.pem"
 port = 8080
 key = ""
-#class AuthHandler(SimpleHTTPRequestHandler):
-class Main(SimpleHTTPRequestHandler):
+class AuthHandler(SimpleHTTPRequestHandler):
     ''' Main class to present webpages and authentication. '''
     server_version = "SimpleHTTPWithUpload/" + __version__
 
@@ -227,7 +229,7 @@ class Main(SimpleHTTPRequestHandler):
         '.h': 'text/plain',
     })
 
-def run(HandlerClass=Main, ServerClass=BaseHTTPServer.HTTPServer, protocol="HTTP/1.0"):
+def run(HandlerClass=AuthHandler, ServerClass=BaseHTTPServer.HTTPServer, protocol="HTTP/1.0"):
     server_address = ('0.0.0.0', port)
 
     HandlerClass.protocol_version = protocol
@@ -245,3 +247,4 @@ if __name__ == '__main__':
         print "Serving Directory {cd}".format(cd=change_dir)
         os.chdir(change_dir)
     run()
+
