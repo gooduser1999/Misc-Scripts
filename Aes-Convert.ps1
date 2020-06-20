@@ -4,7 +4,7 @@ Param( [Parameter(Position = 0, Mandatory = $False)]
 		[String]
 		$Data,
 		[String]
-		$DefaultKey = '6okwNMooMk9mkxGAGOqGDQ==',
+		$DefaultKey = 'RJdMmqalLb5I5AWxU95i5Mcl4TTpmrc7w1oCUAD5Ku0=',
 		[Switch]
 		$String,
 		[Switch]
@@ -23,7 +23,7 @@ function Create-AesManagedObject($key, $IV) {
     $aesManaged.Mode = [System.Security.Cryptography.CipherMode]::CBC
     $aesManaged.Padding = [System.Security.Cryptography.PaddingMode]::Zeros
     $aesManaged.BlockSize = 128
-    $aesManaged.KeySize = 128
+    $aesManaged.KeySize = 256
     if ($IV) {
         if ($IV.getType().Name -eq "String") {
 #	    $aesManaged.IV = [System.Convert]::FromBase64String($IV) to $aesManaged.IV = [Text.Encoding]::UTF8.GetBytes($IV)
@@ -152,7 +152,7 @@ $aesManaged = New-Object "System.Security.Cryptography.AesManaged"
 $aesManaged.Mode = [System.Security.Cryptography.CipherMode]::CBC
 $aesManaged.Padding = [System.Security.Cryptography.PaddingMode]::Zeros
 $aesManaged.BlockSize = 128
-$aesManaged.KeySize = 128
+$aesManaged.KeySize = 256
 if ($IV) { if ($IV.getType().Name -eq "String") { $aesManaged.IV = [System.Convert]::FromBase64String($IV) } else { $aesManaged.IV = $IV } }
 if ($key) { if ($key.getType().Name -eq "String") { $aesManaged.Key = [System.Convert]::FromBase64String($key) } else { $aesManaged.Key = $key } }
 $aesManaged }
