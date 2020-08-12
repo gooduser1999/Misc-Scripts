@@ -1,13 +1,5 @@
-<#
-https://github.com/danielbohannon/Invoke-Obfuscation.git
-danielbohannon's Invoke-Obfuscation scripts in 1 file.
-Optional switches to Obfuscate file by Reordering or Concat (h+ll+0).
-#>
-param (
-    [Switch] $Reorder, 
-    [Switch] $Concat
-    )
-function Invoke-Obfuscation {
+function Invoke-Obfuscation
+{
     [CmdletBinding(DefaultParameterSetName = 'ScriptBlock')] Param (
         [Parameter(Position = 0, ValueFromPipeline = $True, ParameterSetName = 'ScriptBlock')]
         [ValidateNotNullOrEmpty()]
@@ -72,16 +64,7 @@ function Invoke-Obfuscation {
         If($Option[2]) {$SettableInputOptions += ([String]$Option[0]).ToLower().Trim()}
     }
     $Script:LauncherApplied = $FALSE
-    <#If(!(Get-Module Invoke-Obfuscation | Where-Object {$_.ModuleType -eq 'Manifest'}))
-    {
-        $PathTopsd1 = "$ScriptDir\Invoke-Obfuscation.psd1"
-        If($PathTopsd1.Contains(' ')) {$PathTopsd1 = '"' + $PathTopsd1 + '"'}
-        Write-Host "`n`nERROR: Invoke-Obfuscation module is not loaded. You must run:" -ForegroundColor Red
-        Write-Host "       Import-Module $PathTopsd1`n`n" -ForegroundColor Yellow
-        Start-Sleep -Seconds 3
-        Exit
-    } 
-    #>
+    
     $CmdMaxLength = 8190
     $LineSpacing = '[*] '
     $MenuLevel =   @()
@@ -125,7 +108,7 @@ function Invoke-Obfuscation {
     $MenuLevel_Token_Type           += , @($LineSpacing, '2' , "Type Cast + Reordered   --> e.g. <[Type]('{1}{0}'-f'sole','Con')>" , @('Out-ObfuscatedTokenCommand', 'Type', 2))
     $MenuLevel_Token_Whitespace      =   @()
     $MenuLevel_Token_Whitespace     += , @($LineSpacing, '1' , "`tRandom Whitespace --> e.g. <.( 'Ne'  +'w-Ob' +  'ject')>"        , @('Out-ObfuscatedTokenCommand', 'RandomWhitespace', 1))
-    $MenuLevel_Token_Comment         =   @()#Invoke-Obfuscation
+    $MenuLevel_Token_Comment         =   @()
     $MenuLevel_Token_Comment        += , @($LineSpacing, '1' , "Remove Comments   --> e.g. self-explanatory"                       , @('Out-ObfuscatedTokenCommand', 'Comment', 1))
     $MenuLevel_Token_All             =   @()
     $MenuLevel_Token_All            += , @($LineSpacing, '1' , "`tExecute <ALL> Token obfuscation techniques (random order)"       , @('Out-ObfuscatedTokenCommandAll', '', ''))
@@ -1565,8 +1548,8 @@ function Show-AsciiArt
     Write-Host "`tLicense :: Apache License, Version 2.0" -ForegroundColor Magenta
     Write-Host "`tNotes   :: If(!`$Caffeinated) {Exit}" -ForegroundColor Magenta
 }
-#}
-#function Out-CompressedCommand {
+
+
 function Out-CompressedCommand
 {
     [CmdletBinding(DefaultParameterSetName = 'FilePath')] Param (
@@ -1741,8 +1724,8 @@ function Out-CompressedCommand
     }
     Return $NewScript
 }
-#}
-#function Out-SecureStringCommand {
+
+
 function Out-SecureStringCommand
 {
     [CmdletBinding(DefaultParameterSetName = 'FilePath')] Param (
@@ -1931,8 +1914,8 @@ function Out-SecureStringCommand
     }
     Return $NewScript
 }
-#}
-#function Out-PowerShellLauncher {
+
+
 function Out-PowerShellLauncher
 {
     [CmdletBinding(DefaultParameterSetName = 'ScriptBlock')] Param (
@@ -2848,8 +2831,8 @@ function Out-RandomClipboardInvokeSyntax
     }
     Return $PowerShellClip
 }
-#}
-#function Out-ObfuscatedTokenCommand {
+
+
 function Out-ObfuscatedTokenCommand
 {
     [CmdletBinding( DefaultParameterSetName = 'FilePath')] Param (
@@ -3402,7 +3385,7 @@ function Out-ObfuscatedWithTicks
     If($NumberOfCharsToObfuscate -eq 0) {$NumberOfCharsToObfuscate = 1}
     $CharIndexesToObfuscate = (Get-Random -InputObject (1..($TokenArray.Length-2)) -Count $NumberOfCharsToObfuscate)
     $SpecialCharacters = @('a','b','f','n','r','u','t','v','0')
-    $ObfuscatedToken = '' #$NULL
+    $ObfuscatedToken = '' 
     $ObfuscatedToken += $TokenArray[0]
     For($i=1; $i -le $TokenArray.Length-1; $i++)
     {
@@ -3809,8 +3792,8 @@ function Out-RemoveComments
     $ScriptString = $ScriptString.SubString(0,$Token.Start) + $ScriptString.SubString($Token.Start+$Token.Length)
     Return $ScriptString
 }
-#}
-#function Out-ObfuscatedStringCommand {
+
+
 function Out-ObfuscatedStringCommand
 {
     [CmdletBinding( DefaultParameterSetName = 'FilePath')] Param (
@@ -3826,7 +3809,7 @@ function Out-ObfuscatedStringCommand
         [Parameter(Position = 1)]
         [ValidateNotNullOrEmpty()]
         [Int]
-        $ObfuscationLevel = (Get-Random -Input @(1..3)) # Default to random obfuscation level if $ObfuscationLevel isn't defined
+        $ObfuscationLevel = (Get-Random -Input @(1..3)) 
     )
     If($PSBoundParameters['Path'])
     {
@@ -4250,8 +4233,8 @@ function Out-EncapsulatedInvokeExpression
     $ScriptString = (Get-Random -Input $InvokeOptions)
     Return $ScriptString
 }
-#}
-#function Out-ObfuscatedAst {
+
+
 function Out-ObfuscatedAst
 {
     [CmdletBinding(DefaultParameterSetName = "ByString")] Param(
@@ -6635,8 +6618,8 @@ function Get-Ast {
         $Ast
     }
 }
-#}
-#function Out-EncodedWhitespaceCommand {
+
+
 function Out-EncodedWhitespaceCommand
 {
     [CmdletBinding(DefaultParameterSetName = 'FilePath')] Param (
@@ -6853,8 +6836,8 @@ function Out-EncodedWhitespaceCommand
     }
     Return $NewScript
 }
-#}
-#function Out-EncodedSpecialCharOnlyCommand {
+
+
 function Out-EncodedSpecialCharOnlyCommand
 {
     [CmdletBinding(DefaultParameterSetName = 'FilePath')] Param (
@@ -7063,8 +7046,8 @@ function Out-EncodedSpecialCharOnlyCommand
     }
     Return $NewScript
 }
-#}
-#function Out-EncodedOctalCommand {
+
+
 function Out-EncodedOctalCommand
 {
     [CmdletBinding(DefaultParameterSetName = 'FilePath')] Param (
@@ -7256,8 +7239,8 @@ function Out-EncodedOctalCommand
     }
     Return $NewScript
 }
-#}
-#function Out-EncodedBXORCommand {
+
+
 function Out-EncodedBXORCommand
 {
     [CmdletBinding(DefaultParameterSetName = 'FilePath')] Param (
@@ -7460,8 +7443,8 @@ function Out-EncodedBXORCommand
     }
     Return $NewScript
 }
-#}
-#function Out-EncodedBinaryCommand {
+
+
 function Out-EncodedBinaryCommand
 {
     [CmdletBinding(DefaultParameterSetName = 'FilePath')] Param (
@@ -7657,8 +7640,8 @@ function Out-EncodedBinaryCommand
     }
     Return $NewScript
 }
-#}
-#function Out-EncodedAsciiCommand {
+
+
 function Out-EncodedAsciiCommand
 {
     [CmdletBinding(DefaultParameterSetName = 'FilePath')] Param (
@@ -7848,8 +7831,8 @@ function Out-EncodedAsciiCommand
     }
     Return $NewScript
 }
-#}
-#function Out-EncodedHexCommand {
+
+
 function Out-EncodedHexCommand
 {
     [CmdletBinding(DefaultParameterSetName = 'FilePath')] Param (
@@ -8045,41 +8028,4 @@ function Out-EncodedHexCommand
     }
     Return $NewScript
 }
-if ($Concat) {
-$Dpath = (get-item -path ./).FullName
-$DName = (Get-ChildItem $args[0] | select -ExpandProperty name).Trim(".ps1")
-$OutPath = ($Dpath + '/tmp-obs.ps1')
-$OutPath1 = ($Dpath + '/tmp-obs1.ps1')
-$OutPath2 = ($Dpath + '/tmp-obs2.ps1')
-$OutPath3 = ($Dpath + '/tmp-obs3.ps1')
-$OutPath4 = ($DName + 'obs.ps1')
-Out-ObfuscatedTokenCommand -Path $args[0] -TokenTypeToObfuscate String -ObfuscationLevel 1 | Out-File $OutPath
-Out-ObfuscatedTokenCommand -Path $OutPath -TokenTypeToObfuscate Command -ObfuscationLevel 2 | Out-File $OutPath1
-Out-ObfuscatedTokenCommand -Path $OutPath1 -TokenTypeToObfuscate CommandArgument -ObfuscationLevel 3 | Out-File $OutPath2
-Out-ObfuscatedTokenCommand -Path $OutPath2 -TokenTypeToObfuscate Member -ObfuscationLevel 3 | Out-File $OutPath3
-#Out-ObfuscatedTokenCommand -Path $Path -TokenTypeToObfuscate Variable -ObfuscationLevel 1 | Out-File $OutPath
-Out-ObfuscatedTokenCommand -Path $OutPath3 -TokenTypeToObfuscate Type -ObfuscationLevel 1 | Out-File $OutPath4
-Remove-Item $OutPath
-Remove-Item $OutPath1
-Remove-Item $OutPath2
-Remove-Item $OutPath3
-}
-elseif ($Reorder) {
-$Dpath = (get-item -path ./).FullName
-$DName = (Get-ChildItem $args[0] | select -ExpandProperty name).Trim(".ps1")
-$OutPath = ($Dpath + '/tmp-obs.ps1')
-$OutPath1 = ($Dpath + '/tmp-obs1.ps1')
-$OutPath2 = ($Dpath + '/tmp-obs2.ps1')
-$OutPath3 = ($Dpath + '/tmp-obs3.ps1')
-$OutPath4 = ($DName + 'obs.ps1')
-Out-ObfuscatedTokenCommand -Path $args[0] -TokenTypeToObfuscate String -ObfuscationLevel 2 | Out-File $OutPath
-Out-ObfuscatedTokenCommand -Path $OutPath -TokenTypeToObfuscate Command -ObfuscationLevel 3 | Out-File $OutPath1
-Out-ObfuscatedTokenCommand -Path $OutPath1 -TokenTypeToObfuscate CommandArgument -ObfuscationLevel 4 | Out-File $OutPath2
-Out-ObfuscatedTokenCommand -Path $OutPath2 -TokenTypeToObfuscate Member -ObfuscationLevel 4 | Out-File $OutPath3
-#Out-ObfuscatedTokenCommand -Path $Path -TokenTypeToObfuscate Variable -ObfuscationLevel 1 | Out-File $OutPath
-Out-ObfuscatedTokenCommand -Path $OutPath3 -TokenTypeToObfuscate Type -ObfuscationLevel 2 | Out-File $OutPath4
-Remove-Item $OutPath 
-Remove-Item $OutPath1 
-Remove-Item $OutPath2 
-Remove-Item $OutPath3 
-}
+Invoke-Obfuscation
