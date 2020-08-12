@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -10,6 +11,7 @@ import base64
 import json
 import os
 import datetime
+import binascii
 from os import curdir
 from optparse import OptionParser
 from os.path import join as pjoin
@@ -29,10 +31,15 @@ class S(BaseHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
-        b64_string = post_data
-        post_data = base64.b64decode(b64_string)
-        logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
-            str(self.path), str(self.headers), post_data.decode('utf-8'))
+        try:
+            b64_string = post_data
+            post_data = base64.b64decode(b64_string)
+            logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
+                str(self.path), str(self.headers), post_data) #.decode('utf-8'))
+
+        except binascii.Error as err:
+            logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
+                str(self.path), str(self.headers), post_data.decode('utf-8'))
 
         path = str(self.path)
         store_path = pjoin(curdir, 'store.json')
@@ -48,7 +55,6 @@ class S(BaseHTTPRequestHandler):
             log_file.close()
             print("Wrote contents to %s." % path)
         except IOError:
-#            return False
             f=open(store_path, "ab+")
             f.write(post_data)
             f.close()
@@ -56,13 +62,14 @@ class S(BaseHTTPRequestHandler):
             log_file.write("\n")
             log_file.write("%s\n" % datetime.datetime.now())
             log_file.write("\n")
+            log_file.write(self.client_address[0])
             log_file.close()
             print("Wrote contents to %s." % store_path)
 
         self._set_response()
         self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
 
-def run(server_class=HTTPServer, handler_class=S, port=8080):
+def run(server_class=HTTPServer, handler_class=S, port=8181):
     logging.basicConfig(level=logging.INFO)
     server_address = ('127.0.0.1', port)
     httpd = server_class(server_address, handler_class)
