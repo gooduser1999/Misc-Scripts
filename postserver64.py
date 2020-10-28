@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -12,12 +11,27 @@ import json
 import os
 import datetime
 import binascii
+import zlib
 from os import curdir
 from optparse import OptionParser
 from os.path import join as pjoin
 from pathlib import Path
+
+def deflate(data):
+    compress = zlib.compressobj(9, zlib.DEFLATED, -15, zlib.DEF_MEM_LEVEL, 0)
+    deflated = compress.compress(data)
+    deflated += compress.flush()
+    return base64.b64encode(deflated)
+
+def inflate(data):
+    data = base64.b64decode(data)
+    decompress = zlib.decompressobj(-15)
+    inflated = decompress.decompress(data)
+    inflated += decompress.flush()
+    return inflated
+
 class S(BaseHTTPRequestHandler):
-    store_path = pjoin(curdir, 'store.json')
+    store_path = pjoin(curdir, 'store.json')        
     def _set_response(self):
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
@@ -33,7 +47,7 @@ class S(BaseHTTPRequestHandler):
         post_data = self.rfile.read(content_length)
         try:
             b64_string = post_data
-            post_data = base64.b64decode(b64_string)
+            post_data = inflate(b64_string)
             logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
                 str(self.path), str(self.headers), post_data) #.decode('utf-8'))
 
@@ -62,7 +76,6 @@ class S(BaseHTTPRequestHandler):
             log_file.write("\n")
             log_file.write("%s\n" % datetime.datetime.now())
             log_file.write("\n")
-            log_file.write(self.client_address[0])
             log_file.close()
             print("Wrote contents to %s." % store_path)
 
@@ -88,3 +101,5 @@ if __name__ == '__main__':
         run(port=int(argv[1]))
     else:
         run()
+
+
