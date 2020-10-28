@@ -8,7 +8,7 @@ param(
 
 if ($String) {
 $Timeout=10000000;
-$buffer64 = [System.Convert]::ToBase64String(([System.Text.Encoding]::UTF8.GetBytes($data))) 
+$buffer64 = deflate($data)
 $buffer = ([text.encoding]::UTF8).GetBytes($buffer64);
 [System.Net.HttpWebRequest] $webRequest = [System.Net.WebRequest]::Create($Uri) 
 $webRequest.Timeout = $timeout
@@ -30,7 +30,7 @@ $Timeout=10000000;
 $fileName = [System.IO.Path]::GetFileName($data)
 $url = ($Uri + '/' + $fileName);
 $content = Get-Content -LiteralPath ($data) -Encoding byte -ErrorAction SilentlyContinue
-$buffer64 = [convert]::ToBase64String($content)
+$buffer64 = deflate($content)
 $buffer = ([text.encoding]::UTF8).GetBytes($buffer64);
 [System.Net.HttpWebRequest] $webRequest = [System.Net.WebRequest]::Create($url) 
 $webRequest.Timeout = $timeout
@@ -53,7 +53,7 @@ $fileName = [System.IO.Path]::GetFileName($data)
 $url = ($Uri + '/' + $fileName);
 $content = Get-Content -LiteralPath ($data) -Encoding UTF8 -ErrorAction SilentlyContinue
 $scriptInp = [string]::Join("`r`n", $content)
-$buffer64 = [System.Convert]::ToBase64String(([System.Text.Encoding]::UTF8.GetBytes($scriptInp))) 
+$buffer64 = deflate($scriptInp) 
 $buffer = ([text.encoding]::UTF8).GetBytes($buffer64);
 [System.Net.HttpWebRequest] $webRequest = [System.Net.WebRequest]::Create($url) 
 $webRequest.Timeout = $timeout
@@ -70,4 +70,22 @@ $result = $streamReader.ReadToEnd()
 return $result
 $stream.Close()
 }
+}
+function deflate($data) {
+	$s = $data
+	$ms = New-Object System.IO.MemoryStream
+	$cs = New-Object System.IO.Compression.DeflateStream($ms, [System.IO.Compression.CompressionMode]::Compress)
+	$sw = New-Object System.IO.StreamWriter($cs)
+	$sw.Write($s)
+	$sw.Close();
+	$s = [System.Convert]::ToBase64String($ms.ToArray())
+	return $s
+}
+function inflate($data) {
+	$data = [System.Convert]::FromBase64String($data)
+	$ms = New-Object System.IO.MemoryStream
+	$ms.Write($data, 0, $data.Length)
+	$ms.Seek(0,0) | Out-Null
+	$sr = New-Object System.IO.StreamReader(New-Object System.IO.Compression.DeflateStream($ms, [System.IO.Compression.CompressionMode]::Decompress))
+	return $sr.ReadToEnd()
 }
